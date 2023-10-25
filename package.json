@@ -16,8 +16,6 @@
     "utility-types": "^3.10.0"
   },
   "dependencies": {
-    "inversify": "^6.0.2",
-    "reflect-metadata": "^0.1.13",
     "typescript": "^5.2.2"
   }
 }

@@ -1,8 +1,7 @@
-import { Container, decorate, injectable } from 'inversify'
 import { Class } from 'utility-types'
 
 class SingletonRegistry {
-  private container = new Container()
+  private container: Record<any, unknown> = {}
   private static _instance: SingletonRegistry
   private constructor() {}
 
@@ -13,24 +12,13 @@ class SingletonRegistry {
     return this._instance
   }
 
-  public register(abstract: any, implementation: Class<unknown>) {
-    const dependency = implementation as Class<typeof abstract>
-    type T = typeof abstract
-
-    if (!this.container.isBound(dependency)) {
-      decorate(injectable(), dependency)
-      this.container.bind<T>(abstract as Class<T>).to(dependency)
-    }
+  public register<T>(abstract: any, implementation: Class<T>) {
+    this.container[abstract] = new implementation()
   }
 
   public get<T>(abstract: any): T {
-    return this.container.get(abstract as Class<T>)
+    return this.container[abstract] as T
   }
 }
 
 export const Registry = Object.freeze(SingletonRegistry.getInstance())
-
-type AbstractConstructorHelper<T> = (new (...args: any) => {
-  [x: string]: any
-}) &
-  T
